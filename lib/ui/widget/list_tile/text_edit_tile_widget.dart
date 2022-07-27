@@ -20,10 +20,7 @@ class _TextEditTileWidgetState extends State<TextEditTileWidget> {
       widgets: [
         Expanded(
           child: TextField(
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-            ),
+            style: Theme.of(context).textTheme.bodyText2,
             autofocus: true,
             textAlign: TextAlign.right,
             controller: widget.controller,
@@ -34,10 +31,7 @@ class _TextEditTileWidgetState extends State<TextEditTileWidget> {
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 0),
               hintText: "金額輸入",
-              hintStyle: TextStyle(
-                color: Colors.white38,
-                fontSize: 25,
-              ),
+              hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey)
             ),
             onChanged: (value) {
               setState(() {});
@@ -56,7 +50,7 @@ class _TextEditTileWidgetState extends State<TextEditTileWidget> {
               height: 25.0,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white38,
+                color: Theme.of(context).colorScheme.surface,
               ),
               child: Icon(
                 Icons.clear,

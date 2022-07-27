@@ -32,49 +32,47 @@ class _StorePageState extends State<StorePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          backgroundColor: Colors.black,
+          // backgroundColor: Colors.black,
           body: Column(
-            children: [
-              StorePageAppBar(bloc: bloc),
-              Expanded(
-                child: ListView(
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  physics: AlwaysScrollableScrollPhysics(
-                      parent: BouncingScrollPhysics()),
-                  children: [
-                    _buildDateTileWidget(),
-                    MyDividerWidget(),
-                    TextEditTileWidget(controller: bloc.textEditingController),
-                    _buildCategoryTile(),
-                    _buildAccountTypeTileWidget(),
-                    _buildMemberTileWidget(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    _buildMemoTextEditWidget(),
-                    _buildBottomButton(),
-                  ],
-                ),
-              )
-            ],
-          )),
+        children: [
+          StorePageAppBar(bloc: bloc),
+          Expanded(
+            child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              physics: AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics()),
+              children: [
+                _buildDateTileWidget(),
+                TextEditTileWidget(controller: bloc.textEditingController),
+                _buildCategoryTile(),
+                _buildAccountTypeTileWidget(),
+                _buildMemberTileWidget(),
+                _buildMemoTextEditWidget(),
+                _buildBottomButton(),
+              ],
+            ),
+          )
+        ],
+      )),
     );
   }
 
   Widget _buildDateTileWidget() {
-    return Container(
-      color: Colors.white12,
-      child: ListTile(
-        title: InkWell(
-          onTap: () {},
-          child: Center(
-              child: Text(
-            bloc.currentAmountData.date.formatToTW(),
-            style: TextStyle(fontSize: 25, color: Colors.white),
-          )),
+    return Column(
+      children: [
+        ListTile(
+          tileColor: Theme.of(context).colorScheme.tertiary,
+          title: InkWell(
+            onTap: () {},
+            child: Center(
+                child: Text(
+              bloc.currentAmountData.date.formatToTW(),
+              style: Theme.of(context).textTheme.bodyText1,
+            )),
+          ),
         ),
-      ),
+        MyDividerWidget(),
+      ],
     );
   }
 
@@ -131,19 +129,19 @@ class _StorePageState extends State<StorePage> {
 
   Widget _buildMemoTextEditWidget() {
     return Container(
-      color: Colors.white12,
-      height: MediaQuery.of(context).size.height * 0.4,
+      height: MediaQuery.of(context).size.height*0.38,
+      color: Theme.of(context).colorScheme.tertiary,
+      margin: EdgeInsets.only(top: 35, bottom: 5),
       padding: EdgeInsets.all(10),
       child: TextField(
         scrollPadding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         keyboardType: TextInputType.multiline,
-        style: TextStyle(
-          fontSize: 20,
-        ),
+        style: Theme.of(context).textTheme.bodyText2,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: '寫點備註吧...',
+          hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey),
         ),
       ),
     );
@@ -151,10 +149,10 @@ class _StorePageState extends State<StorePage> {
 
   Widget _buildBottomButton() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.45,
+        Expanded(flex: 1, child: SizedBox.shrink()),
+        Expanded(
+          flex: 8,
           child: ElevatedButton(
             onPressed: () {},
             child: Text(
@@ -170,12 +168,13 @@ class _StorePageState extends State<StorePage> {
                   width: 1.0,
                   color: Colors.orange,
                 ),
-                primary: Colors.black,
+                primary: Colors.white,
                 visualDensity: VisualDensity(vertical: 1)),
           ),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.45,
+        Expanded(flex: 1, child: SizedBox.shrink()),
+        Expanded(
+          flex: 8,
           child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                   primary: Colors.orange,
@@ -187,6 +186,7 @@ class _StorePageState extends State<StorePage> {
                     fontSize: 18,
                   ))),
         ),
+        Expanded(flex: 1, child: SizedBox.shrink()),
       ],
     );
   }

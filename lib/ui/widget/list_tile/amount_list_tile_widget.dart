@@ -17,11 +17,6 @@ class AmountListTileWidget extends StatelessWidget {
     required this.onCopyTap,
   }) : super(key: key);
 
-  TextStyle primaryStyle = TextStyle(
-    color: Colors.white,
-    fontSize: 20,
-  );
-
   TextStyle secondaryStyle = TextStyle(
     color: Colors.grey,
     fontSize: 18,
@@ -91,7 +86,7 @@ class AmountListTileWidget extends StatelessWidget {
           ],
         ),
         child: Container(
-          color: Colors.white12,
+          color: Theme.of(context).colorScheme.primaryContainer,
           child: ListTile(
             leading: Icon(
               amountCategory.iconData,
@@ -104,12 +99,12 @@ class AmountListTileWidget extends StatelessWidget {
                   children: [
                     Text(
                       amountCategory.categoryName,
-                      style: primaryStyle,
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                     Spacer(),
                     Text(
                       "${amountData.amount}",
-                      style: primaryStyle,
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ],
                 ),

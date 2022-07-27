@@ -19,31 +19,25 @@ class CommonListTileWidget extends StatelessWidget {
     this.onTap
   }) : super(key: key);
 
-  final TextStyle defaultStyle = TextStyle(
-    color: Colors.white,
-    fontSize: 20,
-  );
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          color: Colors.white12,
+          color: Theme.of(context).colorScheme.tertiary,
           child: ListTile(
             title:Row(
               children: [
                 Icon(
                   iconData,
-                  color: Colors.orange,
                 ),
                 SizedBox(
                   width: 10,
                 ),
-                Text(title, style: defaultStyle),
+                Text(title, style: Theme.of(context).textTheme.bodyText2),
               ] + widgets
             ),
-            trailing: onTap == null ? null : Icon(Icons.arrow_forward_ios, size: 15,color: Colors.white38,),
+            trailing: onTap == null ? null : Icon(Icons.arrow_forward_ios, size: 15,color: Colors.grey,),
             onTap: onTap,
           ),
         ),

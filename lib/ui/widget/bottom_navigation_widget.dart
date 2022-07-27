@@ -1,6 +1,7 @@
 import 'package:account_book/route/page_name.dart';
 import 'package:account_book/ui/model/bottom_navigation_model.dart';
 import 'package:account_book/ui/widget/material_ink_widget.dart';
+import 'package:account_book/ui/widget/my_divider_widget.dart';
 import 'package:flutter/material.dart';
 
 typedef BottomTapCallback = void Function(BottomNavigationData data);
@@ -26,16 +27,23 @@ class BottomNavigationWidget extends StatelessWidget {
       child: Material(
         child: SizedBox(
           height: kBottomNavigationBarHeight,
-          child: Row(
-            children:
-                bottomNavigationList.map((e) => _builditemWidget(e)).toList(),
+          child: Column(
+            children: [
+              MyDividerWidget(height: 0.1),
+              Expanded(
+                child: Row(
+                  children:
+                      bottomNavigationList.map((e) => _buildItemWidget(context, e)).toList(),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _builditemWidget(BottomNavigationData data) {
+  Widget _buildItemWidget(BuildContext context, BottomNavigationData data) {
     /// 是否要高亮
     bool isSelect =
         currentRouteName.isNotEmpty && data.url.contains(currentRouteName);
@@ -51,7 +59,7 @@ class BottomNavigationWidget extends StatelessWidget {
     IconData iconData = data.icon;
 
     Widget commonWidget = Container(
-      color: Colors.black,
+      color: Theme.of(context).colorScheme.tertiary,
       alignment: Alignment.center,
       padding: const EdgeInsets.only(
         top: 6,

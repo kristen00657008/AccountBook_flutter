@@ -28,12 +28,11 @@ class DateTitleWidget extends StatelessWidget {
         children: [
           Text(
             focusDay.toTitle(),
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 25, color: Colors.white),
+            style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.primary),
           ),
           Icon(
             Icons.arrow_drop_down_sharp,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
           )
         ],
       ),

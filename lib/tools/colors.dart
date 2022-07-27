@@ -18,3 +18,9 @@ const MaterialColor primaryBlack = MaterialColor(
 const int _blackPrimaryValue = 0xFF000000;
 
 const Color lightBlack = Color.fromRGBO(54, 54, 54, 1);
+
+const Color lightBackground = Color.fromRGBO(235, 235, 242, 1);
+
+const Color lightSecond = Color.fromRGBO(244, 244, 244, 1);
+
+const Color darkBackground = Color.fromRGBO(36, 36, 36, 1);

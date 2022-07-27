@@ -69,7 +69,7 @@ class _AccountListPageState extends State<AccountListPage> {
         itemBuilder: (context, index) {
           if (index == 0 && amountDataList.isNotEmpty) {
             return Container(
-              color: Colors.white12,
+              color: Theme.of(context).colorScheme.onBackground,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -104,15 +104,12 @@ class _AccountListPageState extends State<AccountListPage> {
           return Column(
             children: [
               if (dayStart)
-                Container(
-                  color: Colors.black,
-                  child: ListTile(
-                    dense: true,
-                    visualDensity: VisualDensity(vertical: -3),
-                    leading: Text(
-                      currentDate.listFormat().toString(),
-                      style: TextStyle(color: Colors.white),
-                    ),
+                ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(vertical: -3),
+                  leading: Text(
+                    currentDate.listFormat().toString(),
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
               AmountListTileWidget(
@@ -128,13 +125,13 @@ class _AccountListPageState extends State<AccountListPage> {
               if (dayEnd) MyDividerWidget(),
               if (dayEnd)
                 Container(
-                  color: Colors.white12,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   child: ListTile(
                     dense: true,
                     visualDensity: VisualDensity(vertical: -4),
                     trailing: Text(
                       "支出: $amount",
-                      style: TextStyle(color: Colors.white),
+                      style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
                 ),
@@ -147,7 +144,7 @@ class _AccountListPageState extends State<AccountListPage> {
     return Column(
       children: [
         ListTile(
-          tileColor: Colors.white12,
+          tileColor: Theme.of(context).colorScheme.onBackground,
           leading: NoFeedbackInkWellWidget(
             onTap: () {
               widget.bloc.pageChanged(
@@ -212,7 +209,7 @@ class _AccountListPageState extends State<AccountListPage> {
         numText,
         Text(
           text,
-          style: TextStyle(color: Colors.grey),
+          style: Theme.of(context).textTheme.headline4,
         )
       ],
     );

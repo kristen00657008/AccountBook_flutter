@@ -7,6 +7,7 @@ import 'package:account_book/ui/bloc/system/application_bloc.dart';
 import 'package:account_book/ui/model/bottom_navigation_model.dart';
 import 'package:account_book/ui/widget/bottom_navigation_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 
 class DefaultPage extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _DefaultPageState extends State<DefaultPage> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Theme.of(context).primaryColor);
     return StreamBuilder<RouteData>(
         stream: ApplicationBloc.getInstance().subPageStream,
         builder: (context, snapshot) {

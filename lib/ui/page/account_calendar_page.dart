@@ -5,7 +5,6 @@ import 'package:account_book/ui/model/amount_data.dart';
 import 'package:account_book/ui/widget/date_title_widget.dart';
 import 'package:account_book/ui/widget/my_divider_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:account_book/tools/colors.dart';
 import 'package:account_book/ui/widget/list_tile/amount_list_tile_widget.dart';
 import 'package:account_book/utils/calendar_utils.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -42,9 +41,8 @@ class AccountCalendarPage extends StatelessWidget {
                 return Column(children: [
                   _buildTableCalendar(amountDataList),
                   Expanded(child: _buildScrollView(amountDataList, focusDay)),
-                  Container(
-                    height: 10,
-                    color: Colors.black,
+                  SizedBox(
+                    height: 40,
                   )
                 ]);
               });
@@ -59,11 +57,11 @@ class AccountCalendarPage extends StatelessWidget {
             return SizedBox.shrink();
           }
           var focusDay = snapshot.requireData;
-          return _tableCalendarWidget(amountDataList, focusDay);
+          return _tableCalendarWidget(context, amountDataList, focusDay);
         });
   }
 
-  Widget _tableCalendarWidget([
+  Widget _tableCalendarWidget(BuildContext context,[
     List<AmountData> amountDataList = const [],
     DateTime? focusDay,
   ]) {
@@ -78,7 +76,7 @@ class AccountCalendarPage extends StatelessWidget {
       pageAnimationEnabled: true,
       pageJumpingEnabled: true,
       headerVisible: true,
-      headerStyle: CalendarHeaderStyle(),
+      headerStyle: CalendarHeaderStyle(context),
       calendarStyle: CalendarStyle(
         rangeHighlightColor: Colors.white12,
         isTodayHighlighted: false,
@@ -101,10 +99,10 @@ class AccountCalendarPage extends StatelessWidget {
           return _buildSelectedCalendaritem(date, amountDataList);
         },
         outsideBuilder: (context, date, _) {
-          return _buildOutSideCalendarItem(date);
+          return _buildOutSideCalendarItem(context, date);
         },
         defaultBuilder: (context, date, _) {
-          return _buildDefaultCalendarItem(date, amountDataList);
+          return _buildDefaultCalendarItem(context, date, amountDataList);
         },
         holidayBuilder: (context, date, _) {
           return _buildHoliDayCalendarItem(date);
@@ -139,7 +137,7 @@ class AccountCalendarPage extends StatelessWidget {
               ),
               child: Text(
                 "今天",
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
           )
@@ -149,7 +147,7 @@ class AccountCalendarPage extends StatelessWidget {
                 date.isEqualTo(DateUtils.dateOnly(DateTime.now()))
                     ? "今天"
                     : date.day.toString(),
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               backgroundColor: Colors.orange,
               radius: 15,
@@ -161,9 +159,9 @@ class AccountCalendarPage extends StatelessWidget {
     );
   }
 
-  Widget _buildOutSideCalendarItem(DateTime date) {
+  Widget _buildOutSideCalendarItem(BuildContext context, DateTime date) {
     return Container(
-      decoration: _defaultBoxDecoration(color: lightBlack),
+      decoration: _defaultBoxDecoration(color: Theme.of(context).colorScheme.background),
       child: Center(
         child: Text(
           date.isEqualTo(DateUtils.dateOnly(DateTime.now())) ? "今天" : date.day.toString(),
@@ -186,7 +184,7 @@ class AccountCalendarPage extends StatelessWidget {
   }
 
   Widget _buildDefaultCalendarItem(
-      DateTime date, List<AmountData> amountDataList) {
+      BuildContext context,DateTime date, List<AmountData> amountDataList) {
     return Container(
       decoration: _defaultBoxDecoration(),
       child: Stack(
@@ -194,11 +192,9 @@ class AccountCalendarPage extends StatelessWidget {
           Center(
             child: Text(
               date.isEqualTo(DateUtils.dateOnly(DateTime.now())) ? "今天" : date.day.toString(),
-              style: TextStyle(
-                  color: dateHasData(date, amountDataList)
-                      ? Colors.green
-                      : Colors.white,
-                  fontSize: 20),
+              style: dateHasData(date, amountDataList)
+                ? Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green)
+                : Theme.of(context).textTheme.bodyText2
             ),
           ),
           dateHasData(date, amountDataList) ? hasDataCircle() : Container()
@@ -207,17 +203,17 @@ class AccountCalendarPage extends StatelessWidget {
     );
   }
 
-  HeaderStyle CalendarHeaderStyle() {
+  HeaderStyle CalendarHeaderStyle(BuildContext context) {
     return HeaderStyle(
       decoration: BoxDecoration(color: Colors.white12,),
       headerPadding: EdgeInsets.zero,
       leftChevronIcon: Icon(
         Icons.chevron_left,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.primary,
       ),
       rightChevronIcon: Icon(
         Icons.chevron_right,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.primary,
       ),
       titleTextStyle: TextStyle(color: Colors.red),
       formatButtonVisible: false,
@@ -264,14 +260,19 @@ class AccountCalendarPage extends StatelessWidget {
             if (index == 0) {
               return _buildHintText();
             } else {
-              return AmountListTileWidget(
-                  onCopyTap: () {
-                    bloc.openStorePage(context, focusAmountDataList[index-1], true);
-                  },
-                  onEditTap: () {
-                    bloc.openStorePage(context, focusAmountDataList[index-1], false);
-                  },
-                  amountData: focusAmountDataList[index - 1]);
+              return Column(
+                children: [
+                  AmountListTileWidget(
+                      onCopyTap: () {
+                        bloc.openStorePage(context, focusAmountDataList[index-1], true);
+                      },
+                      onEditTap: () {
+                        bloc.openStorePage(context, focusAmountDataList[index-1], false);
+                      },
+                      amountData: focusAmountDataList[index - 1]),
+                  if(index == focusAmountDataList.length) MyDividerWidget()
+                ],
+              );
             }
           }),
     );

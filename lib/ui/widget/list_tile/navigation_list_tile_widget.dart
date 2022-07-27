@@ -31,9 +31,7 @@ class NavigationListTileWidget extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerRight,
             child: Text( answer,
-              style: TextStyle(
-                  fontSize: 22,
-                  color: Colors.white),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
           ),
         ),

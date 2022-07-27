@@ -20,7 +20,7 @@ class CommonAppBarWidget extends StatelessWidget {
       elevation: 0,
       titleSpacing: 0,
       centerTitle: true,
-      backgroundColor: Colors.white12,
+      backgroundColor: Theme.of(context).primaryColor,
       title: title,
       leading: leading,
       actions: actions,

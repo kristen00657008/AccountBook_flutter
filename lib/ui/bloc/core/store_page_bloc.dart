@@ -12,8 +12,6 @@ class StorePageBloc extends PageBloc {
 
   TextEditingController textEditingController = TextEditingController();
 
-  // DateTime dataTime = ApplicationBloc.getInstance().focusDay;
-
   AmountData currentAmountData = AmountData(
       id: Uuid().v1(),
       amount: 0,
@@ -22,7 +20,6 @@ class StorePageBloc extends PageBloc {
       categoryIndex: 0,
       text: ""
   );
-
 
   Map<String, dynamic>? get currentAmountDataJson =>
       option.query[BlocOptionKey.StoringAmountDataKey];
