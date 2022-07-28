@@ -90,7 +90,7 @@ class AmountListTileWidget extends StatelessWidget {
           child: ListTile(
             leading: Icon(
               amountCategory.iconData,
-              color: Colors.orange,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
             minLeadingWidth: 0,
             title: Column(

@@ -12,10 +12,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 class AccountCalendarPage extends StatelessWidget {
   final AccountBookPageBloc bloc;
-  const AccountCalendarPage({
-    Key? key,
-    required this.bloc
-  }) : super(key: key);
+
+  const AccountCalendarPage({Key? key, required this.bloc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,7 @@ class AccountCalendarPage extends StatelessWidget {
         stream: ApplicationBloc.getInstance().dateDataStream,
         // initialData: DateUtils.dateOnly(DateTime.now()),
         builder: (context, dateDataSnapshot) {
-          if(!dateDataSnapshot.hasData) {
+          if (!dateDataSnapshot.hasData) {
             return SizedBox.shrink();
           }
           var focusDay = dateDataSnapshot.requireData;
@@ -41,9 +39,7 @@ class AccountCalendarPage extends StatelessWidget {
                 return Column(children: [
                   _buildTableCalendar(amountDataList),
                   Expanded(child: _buildScrollView(amountDataList, focusDay)),
-                  SizedBox(
-                    height: 40,
-                  )
+                  Expanded(child: SizedBox.expand())
                 ]);
               });
         });
@@ -61,98 +57,119 @@ class AccountCalendarPage extends StatelessWidget {
         });
   }
 
-  Widget _tableCalendarWidget(BuildContext context,[
+  Widget _tableCalendarWidget(
+    BuildContext context, [
     List<AmountData> amountDataList = const [],
     DateTime? focusDay,
   ]) {
-    return TableCalendar(
-      daysOfWeekHeight: 30,
-      rowHeight: 45,
-      firstDay: kFirstDay,
-      lastDay: kLastDay,
-      focusedDay: focusDay ?? kToday,
-      calendarFormat: bloc.calendarFormat,
-      currentDay: kToday,
-      pageAnimationEnabled: true,
-      pageJumpingEnabled: true,
-      headerVisible: true,
-      headerStyle: CalendarHeaderStyle(context),
-      calendarStyle: CalendarStyle(
-        rangeHighlightColor: Colors.white12,
-        isTodayHighlighted: false,
-      ),
-      daysOfWeekStyle: DaysOfWeekStyle(
-        weekdayStyle: TextStyle(color: Colors.grey),
-        weekendStyle: TextStyle(color: Colors.grey),
-        decoration: BoxDecoration(color: Colors.white12)
-      ),
-      calendarBuilders: CalendarBuilders(
-        headerTitleBuilder: (context, day) {
-          return DateTitleWidget(
-            focusDay: focusDay ?? kToday,
-            onConfirm: (date) {
-              bloc.pickDay(date, focusDay ?? kToday);
-            },
-          );
-        },
-        selectedBuilder: (context, date, _) {
-          return _buildSelectedCalendaritem(date, amountDataList);
-        },
-        outsideBuilder: (context, date, _) {
-          return _buildOutSideCalendarItem(context, date);
-        },
-        defaultBuilder: (context, date, _) {
-          return _buildDefaultCalendarItem(context, date, amountDataList);
-        },
-        holidayBuilder: (context, date, _) {
-          return _buildHoliDayCalendarItem(date);
-        },
-      ),
-      selectedDayPredicate: (day) => isSameDay(focusDay, day),
-      onCalendarCreated: (controller) {
-        bloc.calendarPageController = controller;
+    return GestureDetector(
+      onHorizontalDragUpdate: (detail) {
+        int sensitivity = 5;
+        if (detail.delta.dx > sensitivity) {
+          // Right Swipe
+          print("Right Swipe");
+          bloc.calendarPageController.animateToPage(
+              bloc.calendarPageController.page!.toInt() - 1,
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeIn);
+        } else if (detail.delta.dx < -sensitivity) {
+          // Left Swipe
+          print("Left Swipe");
+          bloc.calendarPageController.animateToPage(
+              bloc.calendarPageController.page!.toInt() + 1,
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeIn);
+        }
       },
-      onPageChanged: (focusDay) {
-        bloc.pageChanged(focusDay);
-      },
-      onDaySelected: (selectedDay, focusedDay) {
-        bloc.daySelected(selectedDay);
-      },
+      child: TableCalendar(
+        availableGestures: AvailableGestures.none,
+        daysOfWeekHeight: 30,
+        rowHeight: 45,
+        firstDay: kFirstDay,
+        lastDay: kLastDay,
+        focusedDay: focusDay ?? kToday,
+        calendarFormat: bloc.calendarFormat,
+        currentDay: kToday,
+        pageAnimationEnabled: true,
+        pageJumpingEnabled: true,
+        headerVisible: true,
+        headerStyle: CalendarHeaderStyle(context),
+        calendarStyle: CalendarStyle(
+          rangeHighlightColor: Colors.white12,
+          isTodayHighlighted: false,
+        ),
+        daysOfWeekStyle: DaysOfWeekStyle(
+            weekdayStyle: TextStyle(color: Colors.grey),
+            weekendStyle: TextStyle(color: Colors.grey),
+            decoration: BoxDecoration(color: Colors.white12)),
+        calendarBuilders: CalendarBuilders(
+          headerTitleBuilder: (context, day) {
+            return DateTitleWidget(
+              focusDay: focusDay ?? kToday,
+              onConfirm: (date) {
+                bloc.pickDay(date, focusDay ?? kToday);
+              },
+            );
+          },
+          selectedBuilder: (context, date, _) {
+            return _buildSelectedCalendarItem(context, date, amountDataList);
+          },
+          outsideBuilder: (context, date, _) {
+            return _buildOutSideCalendarItem(context, date);
+          },
+          defaultBuilder: (context, date, _) {
+            return _buildDefaultCalendarItem(context, date, amountDataList);
+          },
+          holidayBuilder: (context, date, _) {
+            return _buildHolidayCalendarItem(date);
+          },
+        ),
+        selectedDayPredicate: (day) => isSameDay(focusDay, day),
+        onCalendarCreated: (controller) {
+          bloc.calendarPageController = controller;
+        },
+        onPageChanged: (focusDay) {
+          bloc.pageChanged(focusDay);
+        },
+        onDaySelected: (selectedDay, focusedDay) {
+          bloc.daySelected(selectedDay);
+        },
+      ),
     );
   }
 
-  Widget _buildSelectedCalendaritem(
-      DateTime date, List<AmountData> amountDataList) {
+  Widget _buildSelectedCalendarItem(
+      BuildContext context, DateTime date, List<AmountData> amountDataList) {
     return Container(
       decoration: _defaultBoxDecoration(),
       child: Stack(
         children: [
           date.isEqualTo(DateUtils.dateOnly(DateTime.now()))
               ? Align(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 4.8, horizontal: 8),
-              decoration: BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.all(Radius.elliptical(55, 60)),
-              ),
-              child: Text(
-                "今天",
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          )
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 4.8, horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).secondaryHeaderColor,
+                      borderRadius: BorderRadius.all(Radius.elliptical(55, 60)),
+                    ),
+                    child: Text(
+                      "今天",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                )
               : Center(
-            child: CircleAvatar(
-              child: Text(
-                date.isEqualTo(DateUtils.dateOnly(DateTime.now()))
-                    ? "今天"
-                    : date.day.toString(),
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-              backgroundColor: Colors.orange,
-              radius: 15,
-            ),
-          ),
+                  child: CircleAvatar(
+                    child: Text(
+                      date.isEqualTo(DateUtils.dateOnly(DateTime.now()))
+                          ? "今天"
+                          : date.day.toString(),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                    backgroundColor: Theme.of(context).secondaryHeaderColor,
+                    radius: 15,
+                  ),
+                ),
           dateHasData(date, amountDataList) ? hasDataCircle() : Container()
         ],
       ),
@@ -161,17 +178,20 @@ class AccountCalendarPage extends StatelessWidget {
 
   Widget _buildOutSideCalendarItem(BuildContext context, DateTime date) {
     return Container(
-      decoration: _defaultBoxDecoration(color: Theme.of(context).colorScheme.background),
+      decoration: _defaultBoxDecoration(
+          color: Theme.of(context).colorScheme.background),
       child: Center(
         child: Text(
-          date.isEqualTo(DateUtils.dateOnly(DateTime.now())) ? "今天" : date.day.toString(),
+          date.isEqualTo(DateUtils.dateOnly(DateTime.now()))
+              ? "今天"
+              : date.day.toString(),
           style: TextStyle(color: Colors.grey, fontSize: 20),
         ),
       ),
     );
   }
 
-  Widget _buildHoliDayCalendarItem(DateTime date) {
+  Widget _buildHolidayCalendarItem(DateTime date) {
     return Container(
       decoration: _defaultBoxDecoration(),
       child: Center(
@@ -184,18 +204,22 @@ class AccountCalendarPage extends StatelessWidget {
   }
 
   Widget _buildDefaultCalendarItem(
-      BuildContext context,DateTime date, List<AmountData> amountDataList) {
+      BuildContext context, DateTime date, List<AmountData> amountDataList) {
     return Container(
       decoration: _defaultBoxDecoration(),
       child: Stack(
         children: [
           Center(
             child: Text(
-              date.isEqualTo(DateUtils.dateOnly(DateTime.now())) ? "今天" : date.day.toString(),
-              style: dateHasData(date, amountDataList)
-                ? Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green)
-                : Theme.of(context).textTheme.bodyText2
-            ),
+                date.isEqualTo(DateUtils.dateOnly(DateTime.now()))
+                    ? "今天"
+                    : date.day.toString(),
+                style: dateHasData(date, amountDataList)
+                    ? Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(color: Colors.green)
+                    : Theme.of(context).textTheme.bodyText2),
           ),
           dateHasData(date, amountDataList) ? hasDataCircle() : Container()
         ],
@@ -205,7 +229,9 @@ class AccountCalendarPage extends StatelessWidget {
 
   HeaderStyle CalendarHeaderStyle(BuildContext context) {
     return HeaderStyle(
-      decoration: BoxDecoration(color: Colors.white12,),
+      decoration: BoxDecoration(
+        color: Colors.white12,
+      ),
       headerPadding: EdgeInsets.zero,
       leftChevronIcon: Icon(
         Icons.chevron_left,
@@ -230,13 +256,13 @@ class AccountCalendarPage extends StatelessWidget {
       visualDensity: VisualDensity(vertical: -4),
       leading: bloc.focusDayExpenditure > 0
           ? Text(
-        "支出: ${bloc.focusDayExpenditure}",
-        style: hintTextStyle,
-      )
+              "支出: ${bloc.focusDayExpenditure}",
+              style: hintTextStyle,
+            )
           : Text(
-        "沒有紀錄。按「+」新增紀錄",
-        style: hintTextStyle,
-      ),
+              "沒有紀錄。按「+」新增紀錄",
+              style: hintTextStyle,
+            ),
     );
   }
 
@@ -250,7 +276,8 @@ class AccountCalendarPage extends StatelessWidget {
 
     return SlidableAutoCloseBehavior(
       child: ListView.separated(
-          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          physics:
+              AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           itemCount: 1 + focusAmountDataList.length,
           // itemExtent: 50,
           separatorBuilder: (context, index) {
@@ -264,13 +291,15 @@ class AccountCalendarPage extends StatelessWidget {
                 children: [
                   AmountListTileWidget(
                       onCopyTap: () {
-                        bloc.openStorePage(context, focusAmountDataList[index-1], true);
+                        bloc.openStorePage(
+                            context, focusAmountDataList[index - 1], true);
                       },
                       onEditTap: () {
-                        bloc.openStorePage(context, focusAmountDataList[index-1], false);
+                        bloc.openStorePage(
+                            context, focusAmountDataList[index - 1], false);
                       },
                       amountData: focusAmountDataList[index - 1]),
-                  if(index == focusAmountDataList.length) MyDividerWidget()
+                  if (index == focusAmountDataList.length) MyDividerWidget()
                 ],
               );
             }

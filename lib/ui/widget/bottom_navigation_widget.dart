@@ -50,11 +50,11 @@ class BottomNavigationWidget extends StatelessWidget {
     bool isStorePage =
         currentRouteName.isNotEmpty && data.url.contains(PageName.StorePage);
 
-    Color textColor = isSelect ? Colors.orange : Colors.grey;
+    Color textColor = isSelect ? Theme.of(context).secondaryHeaderColor : Colors.grey;
     Color iconColor = isStorePage
-        ? Colors.orange
+        ? Theme.of(context).secondaryHeaderColor
         : isSelect
-            ? Colors.orange
+            ? Theme.of(context).secondaryHeaderColor
             : Colors.grey;
     IconData iconData = data.icon;
 

@@ -3,22 +3,31 @@ import 'package:account_book/tools/colors.dart';
 import 'package:account_book/ui/bloc/system/application_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+      EasyDynamicThemeWidget(
+          child: MyApp()
+      )
+  );
 }
 
 class MyApp extends StatelessWidget {
-  static final ValueNotifier<ThemeMode> themeNotifier =
-      ValueNotifier(ThemeMode.light);
+  static ValueNotifier<MaterialColor> primaryColor = ValueNotifier<MaterialColor>(Colors.orange);
 
   MyApp({Key? key}) : super(key: key);
 
   final themeData = ThemeData(
-      appBarTheme: AppBarTheme(
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
+      // primarySwatch: Colors.orange,
       primaryColor: Colors.orange,
+      secondaryHeaderColor: Colors.orange,
+      appBarTheme: AppBarTheme(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        )
+      ),
       scaffoldBackgroundColor: lightBackground,
       iconTheme: IconThemeData(
         color: Colors.orange,
@@ -46,17 +55,18 @@ class MyApp extends StatelessWidget {
       ));
 
   final darkThemeData = ThemeData(
-      primaryColor: Colors.white12,
+      primaryColor: lightBlack,
+      secondaryHeaderColor: Colors.orange,
       scaffoldBackgroundColor: Colors.black,
-      iconTheme: const IconThemeData(
+      iconTheme: IconThemeData(
         color: Colors.orange,
       ),
       dividerColor: Colors.white38,
       textTheme: TextTheme(
         bodyText1: TextStyle(color: Colors.white, fontSize: 25),
-        bodyText2: TextStyle(color: Colors.white, fontSize: 20),
-        subtitle1: TextStyle(color: Colors.white, fontSize: 18),
-        subtitle2: TextStyle(color: Colors.white, fontSize: 15),
+        bodyText2: TextStyle(color: Colors.white, fontSize: 22),
+        subtitle1: TextStyle(color: Colors.white, fontSize: 20),
+        subtitle2: TextStyle(color: Colors.white, fontSize: 18),
         headline1: TextStyle(color: Colors.grey, fontSize: 25),
         headline2: TextStyle(color: Colors.grey, fontSize: 22),
         headline3: TextStyle(color: Colors.grey, fontSize: 20),
@@ -70,7 +80,7 @@ class MyApp extends StatelessWidget {
         background: lightBlack,
         surface: Colors.grey,
         primaryContainer: Colors.white12,
-        onBackground: Colors.white12,
+        onBackground: darkBackground,
       ));
 
   @override
@@ -78,16 +88,17 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return ValueListenableBuilder<ThemeMode>(
-        valueListenable: themeNotifier,
-        builder: (_, ThemeMode currentMode, __) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: themeData,
-            darkTheme: darkThemeData,
-            themeMode: currentMode,
-            home: ApplicationBloc.getInstance().getPage(PageName.DefaultPage),
-          );
-        });
+    return ValueListenableBuilder<MaterialColor>(
+        valueListenable: primaryColor,
+      builder: (_, MaterialColor primaryColor, Widget? child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: themeData.copyWith(primaryColor: primaryColor, secondaryHeaderColor: primaryColor, iconTheme: IconThemeData(color: primaryColor)),
+          darkTheme: darkThemeData.copyWith(secondaryHeaderColor: primaryColor, iconTheme: IconThemeData(color: primaryColor)),
+          themeMode: EasyDynamicTheme.of(context).themeMode,
+          home: ApplicationBloc.getInstance().getPage(PageName.DefaultPage),
+        );
+      }
+    );
   }
 }

@@ -32,7 +32,6 @@ class _StorePageState extends State<StorePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          // backgroundColor: Colors.black,
           body: Column(
         children: [
           StorePageAppBar(bloc: bloc),
@@ -129,7 +128,9 @@ class _StorePageState extends State<StorePage> {
 
   Widget _buildMemoTextEditWidget() {
     return Container(
-      height: MediaQuery.of(context).size.height*0.38,
+      height: MediaQuery.of(context).viewInsets.bottom == 0
+          ? MediaQuery.of(context).size.height * 0.38
+          : MediaQuery.of(context).size.height * 0.30,
       color: Theme.of(context).colorScheme.tertiary,
       margin: EdgeInsets.only(top: 35, bottom: 5),
       padding: EdgeInsets.all(10),
@@ -141,7 +142,10 @@ class _StorePageState extends State<StorePage> {
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: '寫點備註吧...',
-          hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey),
+          hintStyle: Theme.of(context)
+              .textTheme
+              .bodyText2
+              ?.copyWith(color: Colors.grey),
         ),
       ),
     );
@@ -158,7 +162,7 @@ class _StorePageState extends State<StorePage> {
             child: Text(
               "儲存",
               style: TextStyle(
-                color: Colors.orange,
+                color: Theme.of(context).secondaryHeaderColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
@@ -166,9 +170,9 @@ class _StorePageState extends State<StorePage> {
             style: ElevatedButton.styleFrom(
                 side: BorderSide(
                   width: 1.0,
-                  color: Colors.orange,
+                  color: Theme.of(context).secondaryHeaderColor,
                 ),
-                primary: Colors.white,
+                primary: Theme.of(context).scaffoldBackgroundColor,
                 visualDensity: VisualDensity(vertical: 1)),
           ),
         ),
@@ -177,7 +181,7 @@ class _StorePageState extends State<StorePage> {
           flex: 8,
           child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary: Colors.orange,
+                  primary: Theme.of(context).secondaryHeaderColor,
                   visualDensity: VisualDensity(vertical: 1)),
               onPressed: () {},
               child: Text("再記一筆",

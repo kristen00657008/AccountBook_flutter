@@ -37,6 +37,7 @@ class _DefaultPageState extends State<DefaultPage> {
 
           return SafeArea(
             child: Scaffold(
+                resizeToAvoidBottomInset: false,
                 bottomNavigationBar: _buildBottomNavigationBar(routeData),
                 body: Container(
                   child: _contentPage(routeData),

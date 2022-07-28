@@ -1,8 +1,8 @@
-import 'package:account_book/main.dart';
 import 'package:account_book/route/base_bloc.dart';
 import 'package:account_book/ui/bloc/core/account_book_page_bloc.dart';
 import 'package:account_book/ui/bloc/system/application_bloc.dart';
 import 'package:account_book/ui/widget/common_app_bar_widget.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 
 class AccountBookPageAppBar extends StatefulWidget {
@@ -36,19 +36,22 @@ class _AccountBookPageAppBarState extends State<AccountBookPageAppBar> {
               flex: 1,
               child: IconButton(
                 onPressed: () {
-                  MyApp.themeNotifier.value =
-                      MyApp.themeNotifier.value == ThemeMode.light
-                          ? ThemeMode.dark
-                          : ThemeMode.light;
+                  EasyDynamicTheme.of(context).themeMode == ThemeMode.light
+                      ? EasyDynamicTheme.of(context)
+                          .changeTheme(dynamic: false, dark: true)
+                      : EasyDynamicTheme.of(context)
+                          .changeTheme(dynamic: false,dark: false);
                 },
-                icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
+                icon: Icon(EasyDynamicTheme.of(context).themeMode == ThemeMode.light
                     ? Icons.dark_mode
                     : Icons.light_mode),
               )),
           Expanded(
               flex: 1,
               child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+
+                  },
                   icon: const Icon(
                     Icons.work_outline,
                     color: Colors.white,
@@ -96,7 +99,7 @@ class _AccountBookPageAppBarState extends State<AccountBookPageAppBar> {
                 ? Theme.of(context)
                     .textTheme
                     .subtitle2
-                    ?.copyWith(color: Theme.of(context).colorScheme.secondary)
+                    ?.copyWith(color: Theme.of(context).primaryColor)
                 : Theme.of(context)
                     .textTheme
                     .subtitle2

@@ -1,11 +1,12 @@
 import 'package:account_book/route/base_bloc.dart';
 import 'package:account_book/ui/bloc/choose_Category_page_bloc.dart';
 import 'package:account_book/ui/bloc/system/application_bloc.dart';
+import 'package:account_book/ui/widget/common_app_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_draggable_gridview/flutter_draggable_gridview.dart';
 
 class ChooseCategoryPage extends StatefulWidget {
-  ChooseCategoryPage({Key? key}) : super(key: key);
+  const ChooseCategoryPage({Key? key}) : super(key: key);
 
   @override
   ChooseCategoryPageState createState() => ChooseCategoryPageState();
@@ -13,34 +14,36 @@ class ChooseCategoryPage extends StatefulWidget {
 
 class ChooseCategoryPageState extends State<ChooseCategoryPage> {
   late ChooseCategoryPageBloc bloc;
-  // late StorePageBloc storePageBloc;
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<ChooseCategoryPageBloc>(context);
-    // storePageBloc = BlocProvider.of<StorePageBloc>(context);
     _generateImageData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 80,
-        title: Text("類別"),
-        centerTitle: true,
-        backgroundColor: Colors.white10,
-      ),
-      backgroundColor: Colors.black,
-      body: DraggableGridViewBuilder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          childAspectRatio: 1.35,
-        ),
-        children: bloc.listOfDraggableGridItem,
-        dragCompletion: onDragAccept,
-        dragFeedback: feedback,
-        dragPlaceHolder: placeHolder,
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CommonAppBarWidget(
+              title: Text("類別"),
+          ),
+          Expanded(
+            child: DraggableGridViewBuilder(
+              padding: EdgeInsets.symmetric(vertical: 5),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 2.8),
+              ),
+              children: bloc.listOfDraggableGridItem,
+              dragCompletion: onDragAccept,
+              dragFeedback: feedback,
+              dragPlaceHolder: placeHolder,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -51,7 +54,7 @@ class ChooseCategoryPageState extends State<ChooseCategoryPage> {
   }
 
   Widget feedback(List<DraggableGridItem> list, int index) {
-    return Container(
+    return SizedBox(
       child: list[index].child,
       width: 110,
       height: 80,
@@ -61,7 +64,7 @@ class ChooseCategoryPageState extends State<ChooseCategoryPage> {
   PlaceHolderWidget placeHolder(List<DraggableGridItem> list, int index) {
     return PlaceHolderWidget(
       child: Container(
-        color: Colors.black,
+        color: Theme.of(context).scaffoldBackgroundColor,
       ),
     );
   }
@@ -77,7 +80,7 @@ class ChooseCategoryPageState extends State<ChooseCategoryPage> {
           initialData: 0,
           builder: (context, snapshot) {
             return Card(
-                color: Colors.white10,
+                color: Theme.of(context).primaryColor,
                 shape: index == snapshot.requireData
                     ? RoundedRectangleBorder(
                         side: BorderSide(color: Colors.orange, width: 2),
